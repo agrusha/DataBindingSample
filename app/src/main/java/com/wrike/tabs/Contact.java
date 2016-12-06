@@ -3,8 +3,6 @@ package com.wrike.tabs;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 
-import com.google.common.base.Predicate;
-
 public class Contact extends BaseObservable {
     private String avatarUrl;
     private String username;
@@ -31,16 +29,15 @@ public class Contact extends BaseObservable {
         return status;
     }
 
-    public static class ContactPredicate implements Predicate<Contact> {
+    public static class ContactPredicate {
         private final CharSequence text;
 
         public ContactPredicate(CharSequence text) {
             this.text = text;
         }
 
-        @Override
         public boolean apply(Contact input) {
-            return input.getUsername().contains(text);
+            return input.getUsername().toLowerCase().contains(text);
         }
     }
 }

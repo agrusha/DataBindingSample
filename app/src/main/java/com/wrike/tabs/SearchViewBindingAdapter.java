@@ -26,20 +26,12 @@ public class SearchViewBindingAdapter {
                 view.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String query) {
-                        if (submit != null) {
-                            return submit.onQueryTextSubmit(query);
-                        } else {
-                            return false;
-                        }
+                        return submit != null && submit.onQueryTextSubmit(query);
                     }
 
                     @Override
                     public boolean onQueryTextChange(String newText) {
-                        if (change != null) {
-                            return change.onQueryTextChange(newText);
-                        } else {
-                            return false;
-                        }
+                        return change != null && change.onQueryTextChange(newText);
                     }
                 });
             }
@@ -57,20 +49,12 @@ public class SearchViewBindingAdapter {
                 view.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
                     @Override
                     public boolean onSuggestionSelect(int position) {
-                        if (submit != null) {
-                            return submit.onSuggestionSelect(position);
-                        } else {
-                            return false;
-                        }
+                        return submit != null && submit.onSuggestionSelect(position);
                     }
 
                     @Override
                     public boolean onSuggestionClick(int position) {
-                        if (change != null) {
-                            return change.onSuggestionClick(position);
-                        } else {
-                            return false;
-                        }
+                        return change != null && change.onSuggestionClick(position);
                     }
                 });
             }

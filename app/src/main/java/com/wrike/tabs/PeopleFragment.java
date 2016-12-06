@@ -1,6 +1,7 @@
 package com.wrike.tabs;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,8 +14,10 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PeopleFragment extends Fragment {
-    private RecyclerView recyclerView;
+public class PeopleFragment extends Fragment implements SearchViewBindingAdapter.OnQueryTextChange {
+    @Nullable
+    private SearchHandler searchHandler;
+
     private ContactAdapter contactAdapter = new ContactAdapter();
 
     @Override
@@ -26,7 +29,7 @@ public class PeopleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_people, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(contactAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -47,6 +50,33 @@ public class PeopleFragment extends Fragment {
         contacts.add(paris);
         contacts.add(rulon);
         contacts.add(vissarion);
+        contacts.add(deriv);
         contactAdapter.addContacts(contacts);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (searchHandler != null) {
+            searchHandler.addTextChangeListener(this);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        if (searchHandler != null) {
+            searchHandler.removeTextChangeListener(this);
+        }
+        super.onPause();
+    }
+
+    public void setSearchHandler(SearchHandler searchHandler) {
+        this.searchHandler = searchHandler;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        contactAdapter.getFilter().filter(newText);
+        return false;
     }
 }

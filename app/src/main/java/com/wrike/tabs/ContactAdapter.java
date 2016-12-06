@@ -9,8 +9,6 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.wrike.tabs.databinding.ViewListItemBinding;
 
 import java.util.ArrayList;
@@ -65,21 +63,32 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactViewHolder> impl
                 return fillFromIterable(rawContacts);
             } else {
                 return fillFromIterable(
-                        Iterables.filter(rawContacts, new Contact.ContactPredicate(currentFilter))
+                        filter(rawContacts, new Contact.ContactPredicate(currentFilter))
                 );
             }
         }
 
-        private FilterResults fillFromIterable(Iterable<Contact> contacts) {
+        private FilterResults fillFromIterable(List<Contact> contacts) {
             FilterResults results = new FilterResults();
             results.values = contacts;
-            results.count = Iterables.size(contacts);
+            results.count = contacts.size();
             return results;
         }
 
+        private synchronized List<Contact> filter (List<Contact> unfiltered, Contact.ContactPredicate filter) {
+            List<Contact> filtered = new ArrayList<>();
+            for (Contact contact : unfiltered) {
+                if (filter.apply(contact)) {
+                    filtered.add(contact);
+                }
+            }
+            return filtered;
+        }
+
+        @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-            filteredContactList = Lists.newArrayList((Iterable<Contact>) filterResults);
+            filteredContactList = (List<Contact>) filterResults.values;
             notifyDataSetChanged();
         }
     }

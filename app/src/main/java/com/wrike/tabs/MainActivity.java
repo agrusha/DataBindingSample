@@ -19,7 +19,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        binding.setHandler(new SearchHandler());
+        SearchHandler searchHandler = new SearchHandler();
+        binding.setHandler(searchHandler);
 
         setSupportActionBar(binding.toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         ViewPager viewPager = binding.viewpager;
-        setupViewPager(viewPager);
+        setupViewPager(viewPager, searchHandler);
 
         TabLayout tabLayout = binding.tablayout;
         tabLayout.setupWithViewPager(viewPager);
@@ -37,10 +38,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager(ViewPager viewPager, SearchHandler searchHandler) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         PeopleFragment peopleFragment = new PeopleFragment();
         peopleFragment.initData();
+        peopleFragment.setSearchHandler(searchHandler);
         adapter.addFragment(peopleFragment, "People");
         adapter.addFragment(new PeopleFragment(), "Group");
         adapter.addFragment(new PeopleFragment(), "Calls");
